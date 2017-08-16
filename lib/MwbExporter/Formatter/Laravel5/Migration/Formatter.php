@@ -40,14 +40,14 @@ class Formatter extends BaseFormatter
     protected function init()
     {
         parent::init();
-        $dataName = (new \DateTime())->format('Y_m_d_His');
+        $timestamp = (new \DateTime())->format('Y_m_d_Hi');
         $this->addConfigurations(array(
             static::CFG_INDENTATION             => 4,
-            static::CFG_FILENAME                => 'Migrations/%schema%/' . $dataName . '_create_%table%_table.%extension%',
+            static::CFG_FILENAME                => 'Migrations/%schema%/' . $timestamp . '%order%_create_%table%_table.%extension%',
             static::CFG_PARENT_TABLE            => 'Migration',
             static::CFG_TABLE_PREFIX            => 'Create',
             static::CFG_TABLE_SUFFIX            => 'Table',
-            static::CFG_GENERATE_TIMESTAPMS     => false,
+            static::CFG_GENERATE_TIMESTAPMS     => true,
         ));
     }
 
@@ -87,4 +87,10 @@ class Formatter extends BaseFormatter
     {
         return 'php';
     }
+
+    public function getCommentTagPrefix()
+    {
+        return 'lv';
+    }
+
 }

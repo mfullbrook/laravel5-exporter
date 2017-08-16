@@ -27,7 +27,8 @@
 
 namespace MwbExporter\Formatter\Laravel5\Model\Model;
 
-use MwbExporter\Model\Table as BaseTable;
+use MwbExporter\Model\PhysicalModel;
+use MwbExporter\Formatter\Laravel5\BaseTable;
 use MwbExporter\Formatter\Laravel5\Model\Formatter;
 use MwbExporter\Writer\WriterInterface;
 use MwbExporter\Helper\Comment;
@@ -35,14 +36,22 @@ use Doctrine\Common\Inflector\Inflector;
 
 class Table extends BaseTable
 {
-    public function getNamespace()
+
+
+    public function getParentClass()
     {
-        return $this->translateVars($this->getConfig()->get(Formatter::CFG_NAMESPACE));
+        return $this->translateVars($this->getConfig()->get(Formatter::CFG_PARENT_CLASS));
     }
 
-    public function getParentTable()
+    public function getParentClassBasename()
     {
-        return $this->translateVars($this->getConfig()->get(Formatter::CFG_PARENT_TABLE));
+        return basename(str_replace('\\', '/', $this->getParentClass()));
+    }
+
+    public function isParentClassDifferentNamespace()
+    {
+        return $this->getNamespace() !=
+            str_replace('/', '\\', dirname(str_replace('\\', '/', $this->getParentClass())));
     }
 
     public function writeTable(WriterInterface $writer)
@@ -52,9 +61,11 @@ class Table extends BaseTable
             // $this->getRawTableName() return original form with no camel case
             $writer
                 ->open($this->getTableFileName())
-                ->write('<?php namespace ' . $this->getNamespace() . ';')
+                ->write('<?php')
                 ->write('')
-                ->write('use Illuminate\Database\Eloquent\Model;')
+                ->write('namespace ' . $this->getNamespace() . ';')
+                ->write('')
+                ->writeIf($this->isParentClassDifferentNamespace(), 'use '.$this->getParentClass().';')
                 ->write('')
                 ->writeCallback(function(WriterInterface $writer, Table $_this = null) {
                     if ($_this->getConfig()->get(Formatter::CFG_ADD_COMMENT)) {
@@ -64,7 +75,7 @@ class Table extends BaseTable
                         ;
                     }
                 })
-                ->write('class ' . $this->getModelName() . ' extends '. $this->getParentTable())
+                ->write('class ' . $this->getModelName() . ' extends '. $this->getParentClassBasename())
                 ->write('{')
                 ->indent()
                     ->write('/**')

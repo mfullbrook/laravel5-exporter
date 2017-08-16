@@ -32,7 +32,7 @@ use MwbExporter\Model\Base;
 
 class Formatter extends BaseFormatter
 {
-    const CFG_PARENT_TABLE           = 'parentTable';
+    const CFG_PARENT_CLASS           = 'parentClass';
     const CFG_NAMESPACE              = 'namespace';
     const CFG_GENERATE_FILLABLE      = 'generateFillable';
 
@@ -41,9 +41,9 @@ class Formatter extends BaseFormatter
         parent::init();
         $this->addConfigurations(array(
             static::CFG_INDENTATION             => 4,
-            static::CFG_FILENAME                => 'Models/%schema%/%entity%.%extension%',
-            static::CFG_PARENT_TABLE            => 'Model',
-            static::CFG_NAMESPACE               => 'App\Models',
+            static::CFG_FILENAME                => 'Model/%domain%/%entity%.%extension%',
+            static::CFG_PARENT_CLASS            => 'App\Domain\Shared\Model',
+            static::CFG_NAMESPACE               => 'App\Model',
             static::CFG_GENERATE_FILLABLE       => false,
         ));
     }
@@ -84,4 +84,12 @@ class Formatter extends BaseFormatter
     {
         return 'php';
     }
+
+    public function getCommentTagPrefix()
+    {
+        return 'lv';
+    }
+
+
+
 }

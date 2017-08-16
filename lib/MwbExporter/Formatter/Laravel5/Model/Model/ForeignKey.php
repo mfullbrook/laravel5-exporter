@@ -35,11 +35,16 @@ class ForeignKey extends BaseForeignKey
 {
     public function write(WriterInterface $writer)
     {
+        $method = Inflector::camelize(
+            Inflector::singularize(
+                $this->getReferencedTable()->getRawTableName()
+            )
+        );
         $writer
             ->write('/**')
             ->write(' * Relationship with ' . $this->getReferencedTable()->getModelName() . '.')
             ->write(' */')   
-            ->write('public function ' . Inflector::pluralize($this->getReferencedTable()->getRawTableName()) . '()')   
+            ->write('public function ' . $method . '()')
             ->write('{')  
             ->indent()
                 ->write('return $this->belongsTo(\'' . $this->getReferencedTable()->getNamespace() . '\\' . $this->getReferencedTable()->getModelName() . '\', \'' . $this->getLocal()->getColumnName() . '\');')   

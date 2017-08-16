@@ -27,14 +27,13 @@
 
 namespace MwbExporter\Formatter\Laravel5\Migration\Model;
 
-use MwbExporter\Model\Table as BaseTable;
+use MwbExporter\Formatter\Laravel5\BaseTable;
 use MwbExporter\Formatter\Laravel5\Migration\Formatter;
 use MwbExporter\Writer\WriterInterface;
 use MwbExporter\Helper\Comment;
 
 class Table extends BaseTable
 {
-
     public function getTablePrefix()
     {
         return $this->translateVars($this->getConfig()->get(Formatter::CFG_TABLE_PREFIX));
@@ -42,7 +41,7 @@ class Table extends BaseTable
 
     public function getTableSuffix()
     {
-        return $this->translateVars($this->getConfig()->get(Formatter::CFG_TABLE_PREFIX));
+        return $this->translateVars($this->getConfig()->get(Formatter::CFG_TABLE_SUFFIX));
     }
 
     public function getParentTable()
