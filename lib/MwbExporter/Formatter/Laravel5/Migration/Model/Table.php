@@ -138,8 +138,16 @@ class Table extends BaseTable
                         if ($column->isPrimary()) {
                             if($type == 'bigInteger') {
                                 $writer->write('$table->bigIncrements(\'' . $column->getColumnName() . '\');');
-                            } else {
+                            } elseif ($type == 'integer') {
                                 $writer->write('$table->increments(\'' . $column->getColumnName() . '\');');
+                            } else {
+                                $line = '$table->'.$type.'(\'' . $column->getColumnName() . '\'';
+                                if($column->getLength() != -1) {
+                                    $line .= ', ' . $column->getLength();
+                                }
+                                $line .= ');';
+                                $writer->write($line);
+                                $writer->write('$table->primary(\''.$column->getColumnName().'\');');
                             }
                             continue;
                         }

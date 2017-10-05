@@ -125,12 +125,17 @@ class Table extends BaseTable
                                     // If current column is referenced by foreignKey
                                     if(($_this->getRawTableName() == $foreignKey->getReferencedTable()->getRawTableName()) &&
                                         ($column->getColumnName() == $foreignKey->getForeign()->getColumnName())) {
+                                        $method = Inflector::camelize(
+                                            Inflector::pluralize(
+                                                $foreignKey->getOwningTable()->getRawTableName()
+                                            )
+                                        );
                                         // Comment                                        
                                         $writer->write('/**');
                                         $writer->write(' * Relationship with ' . $foreignKey->getOwningTable()->getModelName() . '.');
                                         $writer->write(' */'); 
                                         // Start Method
-                                        $writer->write('public function ' . Inflector::pluralize($foreignKey->getOwningTable()->getRawTableName()) . '()');            
+                                        $writer->write('public function ' . $method . '()');
                                         $writer->write('{');       
                                         $writer->indent();
                                         // One to Many
